@@ -1,17 +1,19 @@
 console.log("roll out");
+console.log('testing')
 
 // Create the map object with a center and zoom level.
-let map = L.map('mapid').setView([51.505, -0.09], 13);
+let map = L.map('mapid').setView([34.0522, -118.2437], 13);
 
-var circle = L.circle([51.508, -0.11], {
-    color: 'red',
-    fillColor: '#f03',
+let circle = L.circle([34.0522, -118.2437], {
+    color: 'black',
+    fillColor: '#ffffa1',
     fillOpacity: 0.5,
-    radius: 50000
+    radius: 300
 }).addTo(map);
 
 // We create the tile layer that will be the background of our map.
-let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}?access_token={accessToken}',
+{
     attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     accessToken: API_KEY
