@@ -36,14 +36,14 @@ console.log("roll out");
 //   }).addTo(map);
 
 // We create the tile layer that will be the background of our map.
-let light = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     accessToken: API_KEY
 });
 
 // We create the dark view tile layer that will be an option for our map.
-let dark = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let sats = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
 attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     accessToken: API_KEY
@@ -51,42 +51,71 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 
 // Create a base layer that holds both maps.
 let baseMaps = {
-    Light: light,
-    Dark: dark
+    'Streets': streets,
+    'Satellite Streets': sats
   };
 
 // Create the map object with center, zoom level and default layer.
 let map = L.map('mapid', {
-    center: [44.0, -80.0],
-    zoom: 2,
-    layers: [light]
+    center: [43.7, -79.3],
+    zoom: 10,
+    layers: [streets]
 });
 
 // Pass our map layers into our layers control and add the layers control to the map.
 L.control.layers(baseMaps).addTo(map);
 
+console.log(map.hasLayer(sats))
+
+
+
+
 // // Then we add our 'graymap' tile layer to the map.
 // streets.addTo(map);
 
-let torontoData = 'https://raw.githubusercontent.com/PGComai/Mapping_Earthquakes/main/torontoNeighborhoods.json';
+let torontoHoods = 'https://raw.githubusercontent.com/PGComai/Mapping_Earthquakes/main/torontoNeighborhoods.json';
 
 // Create a style for the lines.
-let myStyle = {
-    color: "#ffffa1",
-    weight: 2
+let streetStyle = {
+    color: "blue",
+    weight: 1,
+    fillColor: 'yellow'
+}
+let satStyle = {
+    color: "white",
+    weight: 1,
+    fillColor: 'orange'
 }
 
+let myStyle = streetStyle
+
 // Grabbing our GeoJSON data.
-d3.json(torontoData).then(function(data) {
+d3.json(torontoHoods).then(function(data) {
     console.log(data);
   // Creating a GeoJSON layer with the retrieved data.
-  L.geoJSON(data, {
+  var geoJSON = L.geoJSON(data, {
     style: myStyle,
     onEachFeature: function(feature, layer) {
-        console.log(layer);
-        layer.bindPopup('<h2>' + 'Airline: ' + layer.feature.properties.airline + '</h2>' + '<hr>' +
-        '<h3>' + 'Destination: ' + layer.feature.properties.dst + '</h3>'
+        //console.log(layer);
+        layer.bindPopup('<h3>' + 'Neighborhood: ' + layer.feature.properties.AREA_NAME + '</h3>'
         );
     }
   }).addTo(map);
+
+  // changing style for each map layer
+
+  streets.on('add', function(e) {
+    console.log('switched to sat');
+    geoJSON.eachLayer(function(layer) {
+        layer.setStyle(streetStyle);
+    });
+    });
+
+  sats.on('add', function(e) {
+    console.log('switched to sat');
+    geoJSON.eachLayer(function(layer) {
+        layer.setStyle(satStyle);
+    });
+    });
+
 });
