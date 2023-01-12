@@ -133,14 +133,14 @@ function styleInfo(feature) {
     color: "#808080",
     radius: getRadius(feature.properties.mag),
     stroke: true,
-    weight: 2
+    weight: 2.5
   };
 }
 
 // 5. Change the color function to use three colors for the major earthquakes based on the magnitude of the earthquake.
 function getColor(magnitude) {
   if (magnitude > 6) {
-    return "#ee0000";
+    return "#d10000";
   }
   if (magnitude > 5) {
     return "#ee4500";
