@@ -44,6 +44,8 @@ let overlays = {
 // layers are visible.
 L.control.layers(baseMaps, overlays).addTo(map);
 
+/////////////////////////////////////////////////ALL QUAKE ZONE////////////////////////////////////////////////////////////
+
 // Retrieve the earthquake GeoJSON data.
 d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson").then(function(data) {
 
@@ -52,22 +54,26 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geoj
   // to calculate the color and radius.
   function styleInfo(feature) {
     return {
-      opacity: 1,
-      fillOpacity: 1,
+      opacity: getOpacity(feature.properties.mag),
+      fillOpacity: getOpacity(feature.properties.mag),
       fillColor: getColor(feature.properties.mag),
-      color: "#000000",
+      color: "#808080",
       radius: getRadius(feature.properties.mag),
       stroke: true,
       weight: 0.5
     };
   }
 
+  function getOpacity(magnitude) {
+    if (magnitude > 4.5) {
+      return 0;
+    }
+    return 1;
+  }
+
   // This function determines the color of the marker based on the magnitude of the earthquake.
   function getColor(magnitude) {
-    if (magnitude > 5) {
-      return "#ea2c2c";
-    }
-    if (magnitude > 4) {
+    if (magnitude > 4.5) {
       return "#ea822c";
     }
     if (magnitude > 3) {
@@ -86,6 +92,9 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geoj
   // Earthquakes with a magnitude of 0 were being plotted with the wrong radius.
   function getRadius(magnitude) {
     if (magnitude === 0) {
+      return 1;
+    }
+    if (magnitude > 4.5) {
       return 1;
     }
     return magnitude * 4;
@@ -121,23 +130,23 @@ function styleInfo(feature) {
     opacity: 1,
     fillOpacity: 1,
     fillColor: getColor(feature.properties.mag),
-    color: "#000000",
+    color: "#808080",
     radius: getRadius(feature.properties.mag),
     stroke: true,
-    weight: 0.5
+    weight: 2
   };
 }
 
 // 5. Change the color function to use three colors for the major earthquakes based on the magnitude of the earthquake.
 function getColor(magnitude) {
   if (magnitude > 6) {
-    return "#ea2c2c";
+    return "#ee0000";
   }
   if (magnitude > 5) {
-    return "#ea822c";
+    return "#ee4500";
   }
   if (magnitude > 4) {
-    return "#ee9c00";
+    return "#ee7500";
   }
   return "#98ee00";
 }
